@@ -15,6 +15,7 @@ export const signup = async (req, res) => {
       name,
       profilePicture,
     });
+
     const token = jwt.sign(
       {
         email: user.email,
@@ -27,7 +28,15 @@ export const signup = async (req, res) => {
         expiresIn: "30d",
       }
     );
-    res.status(200).json({ user, token });
+
+    const userData = {
+      email: user.email,
+      name: user.name,
+      profilePicture: user.profilePicture,
+      token,
+    };
+
+    res.status(200).json({ user: userData });
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
