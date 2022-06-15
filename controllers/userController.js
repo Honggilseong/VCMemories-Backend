@@ -31,6 +31,7 @@ export const signup = async (req, res) => {
     );
 
     const userData = {
+      _id: user._id,
       email: user.email,
       name: user.name,
       profilePicture: user.profilePicture,
@@ -65,6 +66,7 @@ export const signin = async (req, res) => {
     );
 
     const userData = {
+      _id: existingUser._id,
       email: existingUser.email,
       name: existingUser.name,
       profilePicture: existingUser.profilePicture,
