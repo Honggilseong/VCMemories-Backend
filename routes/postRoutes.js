@@ -1,10 +1,14 @@
 import express from "express";
-import { createPost, getPosts } from "../controllers/postsControllers.js";
+import {
+  createPost,
+  deletePost,
+  getPosts,
+} from "../controllers/postsControllers.js";
 import protect from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
 router.get("/", protect, getPosts);
 router.post("/createpost", protect, createPost);
-
+router.delete("/:id", protect, deletePost);
 export default router;
