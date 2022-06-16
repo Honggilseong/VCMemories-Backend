@@ -14,6 +14,8 @@ const postSchema = mongoose.Schema({
     type: Date,
     default: new Date(),
   },
+  profilePicture: String,
+  userId: String,
 });
 
 const Post = mongoose.model("Post", postSchema);
