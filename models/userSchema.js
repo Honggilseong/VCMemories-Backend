@@ -17,6 +17,27 @@ const userSchema = mongoose.Schema({
     required: true,
     default: false,
   },
+  userPosts: [
+    {
+      _id: String,
+      title: String,
+      picture: String,
+      message: String,
+      tags: [String],
+      name: String,
+      profilePicture: String,
+      userId: String,
+      likes: [String],
+    },
+  ],
+  following: {
+    type: [String],
+    default: [],
+  },
+  followers: {
+    type: [String],
+    default: [],
+  },
 });
 
 userSchema.pre("save", function (next) {
