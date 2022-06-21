@@ -1,12 +1,15 @@
 import mongoose from "mongoose";
 import Post from "../models/postSchema.js";
+import User from "../models/userSchema.js";
 
 export const createPost = async (req, res) => {
   const post = req.body;
   const newPost = new Post({ ...post, createAt: new Date().toISOString() });
   try {
     await newPost.save();
-
+    const user = await User.findById(post.userId);
+    user.userPosts.push(newPost);
+    await user.save();
     res.status(201).json(newPost);
   } catch (error) {
     res.status(404).json({ message: error.message });
