@@ -108,3 +108,18 @@ export const getUserInfo = async (req, res) => {
     res.status(500).json({ message: "Something went wrong" });
   }
 };
+
+export const getSearchingUser = async (req, res) => {
+  const { username } = req.params;
+  try {
+    const userData = await User.findOne({ name: username }).select("-password");
+
+    if (!userData)
+      return res.status(404).json({ message: "User doesn't exist." });
+
+    res.status(200).json(userData);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Something went wrong" });
+  }
+};
