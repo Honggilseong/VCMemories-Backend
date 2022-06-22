@@ -123,3 +123,13 @@ export const getSearchingUser = async (req, res) => {
     res.status(500).json({ message: "Something went wrong" });
   }
 };
+
+export const getAllUsers = async (req, res) => {
+  try {
+    const allUsers = await User.find({}).select("-password");
+
+    res.status(200).json(allUsers);
+  } catch (error) {
+    res.status(401).json({ message: "Something went wrong " });
+  }
+};
