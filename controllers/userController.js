@@ -1,6 +1,7 @@
 import User from "../models/userSchema.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
+import mongoose from "mongoose";
 
 export const signup = async (req, res) => {
   const { email, password, name, profilePicture } = req.body;
@@ -131,5 +132,46 @@ export const getAllUsers = async (req, res) => {
     res.status(200).json(allUsers);
   } catch (error) {
     res.status(401).json({ message: "Something went wrong " });
+  }
+};
+
+export const followUser = async (req, res) => {
+  const { id } = req.params;
+  const { userId } = req.body;
+  if (id === userId) return res.status(405).send("same user");
+  try {
+    if (!mongoose.Types.ObjectId.isValid(id))
+      return res.status(404).send("no user with the id");
+
+    const user = await User.findById(id).select("-userPosts -password");
+    const reqUser = await User.findById(userId).select("-userPosts -password");
+
+    const index = user.followers.findIndex((id) => id === userId);
+    const reqIndex = reqUser.following.findIndex(
+      (followingUser) => followingUser === id
+    );
+
+    if (index === -1) {
+      user.followers.push(userId);
+    } else {
+      user.followers = user.followers.filter((id) => id !== userId);
+    }
+    const updatedUser = await User.findByIdAndUpdate(id, user, {
+      new: true,
+    });
+
+    if (reqIndex === -1) {
+      reqUser.following.push(id);
+    } else {
+      reqUser.following = reqUser.following.filter(
+        (followingUser) => followingUser !== id
+      );
+    }
+    await User.findByIdAndUpdate(userId, reqUser, { new: true });
+    console.log(updatedUser);
+    res.json(updatedUser);
+  } catch (error) {
+    console.log(error);
+    res.status(404).json({ message: "Something went wrong" });
   }
 };
