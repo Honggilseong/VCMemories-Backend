@@ -37,7 +37,11 @@ export const deletePost = async (req, res) => {
     if (deletePostInfo.userId !== userId)
       return res.status(404).send("a wrong user tried to delete this post");
 
+    const user = await User.findById(userId);
     await Post.findByIdAndRemove(id);
+
+    user.userPosts = user.userPosts.filter((post) => post._id !== id);
+    await User.findByIdAndUpdate(userId, user, { new: true });
 
     res.json({ message: "Post deleted successfully" });
   } catch (error) {
