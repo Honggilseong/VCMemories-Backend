@@ -68,3 +68,21 @@ export const likePost = async (req, res) => {
     console.log(err);
   }
 };
+
+export const leaveComment = async (req, res) => {
+  const { id } = req.params;
+  const { comment } = req.body;
+  try {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(404).send("no post with the id");
+    }
+    const post = await Post.findById(id);
+
+    post.comments.push(comment);
+
+    const updatedPost = await Post.findByIdAndUpdate(id, post, { new: true });
+    res.json(updatedPost);
+  } catch (error) {
+    console.log(error);
+  }
+};

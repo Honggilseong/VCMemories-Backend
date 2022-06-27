@@ -3,6 +3,7 @@ import {
   createPost,
   deletePost,
   getPosts,
+  leaveComment,
   likePost,
 } from "../controllers/postsControllers.js";
 import protect from "../middleware/authMiddleware.js";
@@ -13,4 +14,5 @@ router.get("/", protect, getPosts);
 router.post("/createpost", protect, createPost);
 router.delete("/:id", protect, deletePost);
 router.patch("/:id/likepost", protect, likePost);
+router.patch("/:id/leavecomment", protect, leaveComment);
 export default router;
