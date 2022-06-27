@@ -16,6 +16,16 @@ const postSchema = mongoose.Schema({
   },
   profilePicture: String,
   userId: String,
+  comments: {
+    type: [
+      {
+        commentUserId: String,
+        commentUserName: String,
+        comment: String,
+        createdAt: Date,
+      },
+    ],
+  },
 });
 
 const Post = mongoose.model("Post", postSchema);
