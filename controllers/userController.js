@@ -175,3 +175,18 @@ export const followUser = async (req, res) => {
     res.status(404).json({ message: "Something went wrong" });
   }
 };
+
+export const uploadProfileImage = async (req, res) => {
+  const { id, uploadImage } = req.body;
+  console.log(id, uploadImage);
+  try {
+    const user = await User.findById(id);
+
+    user.profilePicture = uploadImage;
+
+    const updatedUser = await User.findByIdAndUpdate(id, user, { new: true });
+    res.status(200).json(updatedUser);
+  } catch (error) {
+    res.status(401).json({ message: "Something went wrong " });
+  }
+};
