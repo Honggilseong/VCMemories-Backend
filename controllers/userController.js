@@ -93,6 +93,7 @@ export const getUserInfo = async (req, res) => {
       userPosts,
       followers,
       following,
+      notifications,
     } = user;
     const userData = {
       _id,
@@ -102,6 +103,7 @@ export const getUserInfo = async (req, res) => {
       userPosts,
       followers,
       following,
+      notifications,
     };
 
     res.status(200).json(userData);
