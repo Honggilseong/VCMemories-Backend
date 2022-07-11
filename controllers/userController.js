@@ -190,3 +190,24 @@ export const uploadProfileImage = async (req, res) => {
     res.status(401).json({ message: "Something went wrong " });
   }
 };
+
+export const sendNotification = async (req, res) => {
+  const { id } = req.params;
+  const { sender, type } = req.body;
+  const notification = {
+    _id: new mongoose.Types.ObjectId(),
+    sender,
+    type,
+    read: false,
+  };
+  try {
+    const user = await User.findById(id);
+
+    user.notifications.push(notification);
+
+    const updatedUser = await User.findByIdAndUpdate(id, user, { new: true });
+    res.status(200).json(updatedUser);
+  } catch (error) {
+    res.status(401).json({ message: "Something went wrong" });
+  }
+};
