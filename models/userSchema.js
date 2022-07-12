@@ -38,16 +38,14 @@ const userSchema = mongoose.Schema({
     type: [String],
     default: [],
   },
-  notifications: {
-    type: [
-      {
-        _id: String,
-        sender: String,
-        type: String,
-        read: Boolean,
-      },
-    ],
-  },
+  notifications: [
+    {
+      _id: mongoose.Schema.Types.ObjectId,
+      sender: String,
+      notificationType: String,
+      read: Boolean,
+    },
+  ],
 });
 
 userSchema.pre("save", function (next) {
