@@ -4,6 +4,7 @@ import {
   getAllUsers,
   getSearchingUser,
   getUserInfo,
+  readNotification,
   sendNotification,
   signin,
   signup,
@@ -18,6 +19,7 @@ router.post("/signup", signup);
 router.patch("/followuser/:id", protect, followUser);
 router.patch("/uploadprofileimage", protect, uploadProfileImage);
 router.patch("/:id/notification", protect, sendNotification);
+router.patch("/:id/readnotification", protect, readNotification);
 router.get("/getuserinfo/:id", protect, getUserInfo);
 router.get("/search/:username", protect, getSearchingUser);
 router.get("/getallusers", protect, getAllUsers);

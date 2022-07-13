@@ -215,3 +215,20 @@ export const sendNotification = async (req, res) => {
     res.status(401).json({ message: "Something went wrong" });
   }
 };
+
+export const readNotification = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const user = await User.findById(id);
+
+    user.notifications = user.notifications.map((notification) => {
+      return { ...notification, read: true };
+    });
+
+    const updatedUser = await User.findByIdAndUpdate(id, user, { new: true });
+    res.status(200).json(updatedUser);
+  } catch (error) {
+    console.log(error.message);
+    res.status(401).json({ message: "Something went wrong" });
+  }
+};
