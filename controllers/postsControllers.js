@@ -81,11 +81,15 @@ export const leaveComment = async (req, res) => {
       return res.status(404).send("no post with the id");
     }
     const post = await Post.findById(id);
-
+    const user = await User.findById(post.userId);
     post.comments.push(comment);
-
+    const userPostIndex = user.userPosts.findIndex(
+      (userPost) => userPost._id === id
+    );
+    user.userPosts[userPostIndex].comments.push(comment);
     const updatedPost = await Post.findByIdAndUpdate(id, post, { new: true });
-    res.json(updatedPost);
+    await User.findByIdAndUpdate(post.userId, user, { new: true });
+    res.status(201).json(updatedPost);
   } catch (error) {
     console.log(error);
   }
