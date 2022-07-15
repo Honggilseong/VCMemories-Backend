@@ -28,6 +28,14 @@ const userSchema = mongoose.Schema({
       profilePicture: String,
       userId: String,
       likes: [String],
+      comments: [
+        {
+          commentUserId: String,
+          commentUserName: String,
+          comment: String,
+          createdAt: Date,
+        },
+      ],
     },
   ],
   following: {
