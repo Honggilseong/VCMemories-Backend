@@ -57,13 +57,20 @@ export const likePost = async (req, res) => {
       return res.status(404).send("no post with the id");
 
     const post = await Post.findById(id);
+    const user = await User.findById(post.userId);
+    const userPostIndex = user.userPosts.findIndex(
+      (userPost) => userPost._id === id
+    );
     const index = post.likes.findIndex((id) => id === userId);
 
     if (index === -1) {
       post.likes.push(userId);
+      user.userPosts[userPostIndex].likes.push(userId);
     } else {
       post.likes = post.likes.filter((id) => id !== userId);
+      user.userPosts[userPostIndex].likes.filter((id) => id !== userId);
     }
+    await User.findByIdAndUpdate(post.userId, user, { new: true });
     const updatedPost = await Post.findByIdAndUpdate(id, post, {
       new: true,
     });
