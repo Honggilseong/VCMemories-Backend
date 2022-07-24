@@ -205,7 +205,7 @@ export const sendNotification = async (req, res) => {
 
   try {
     const user = await User.findById(id);
-    user.notifications.push(notification);
+    user.notifications.unshift(notification);
 
     const updatedUser = await User.findByIdAndUpdate(id, user, { new: true });
     console.log(updatedUser);
