@@ -15,13 +15,30 @@ export const createPost = async (req, res) => {
     res.status(404).json({ message: error.message });
   }
 };
-
 export const getPosts = async (req, res) => {
+  const followingUsers = req.body;
+  console.log(followingUsers);
   try {
-    const postMessages = await Post.find();
-
-    res.status(200).json(postMessages);
+    if (followingUsers.length === 0) return [];
+    const followingPosts = await Post.aggregate([
+      {
+        $match: {
+          userId: { $in: followingUsers },
+        },
+      },
+      {
+        $sort: {
+          createdAt: 1,
+        },
+      },
+      {
+        $limit: 10,
+      },
+    ]);
+    console.log(followingPosts);
+    res.status(200).json(followingPosts);
   } catch (error) {
+    console.log(error);
     res.status(404).json({ message: error.message });
   }
 };
