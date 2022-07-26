@@ -17,8 +17,8 @@ const userSchema = mongoose.Schema({
     required: true,
     default: false,
   },
-  isPrivate: { type: String },
-  userTitle: { type: String },
+  isPrivate: { type: Boolean, default: false },
+  userTitle: { type: String, default: "" },
   userPosts: [
     {
       _id: String,
