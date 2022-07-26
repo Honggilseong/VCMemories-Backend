@@ -51,6 +51,7 @@ const userSchema = mongoose.Schema({
       _id: mongoose.Schema.Types.ObjectId,
       sender: String,
       notificationType: String,
+      image: String,
       read: Boolean,
     },
   ],

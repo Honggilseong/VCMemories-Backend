@@ -195,11 +195,12 @@ export const uploadProfileImage = async (req, res) => {
 
 export const sendNotification = async (req, res) => {
   const { id } = req.params;
-  const { sender, notificationType } = req.body;
+  const { sender, notificationType, image } = req.body;
   const notification = {
     _id: new mongoose.Types.ObjectId(),
     sender,
     notificationType,
+    image,
     read: false,
   };
 
