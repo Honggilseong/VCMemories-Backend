@@ -8,8 +8,11 @@ export const signup = async (req, res) => {
 
   try {
     const existingUser = await User.findOne({ email });
+    const existingUserByName = await User.findOne({ name });
     if (existingUser)
-      return res.status(404).json({ message: "User already exist." });
+      return res.status(404).json({ message: "Your email already exists." });
+    if (existingUserByName)
+      return res.status(404).json({ message: "Your name already exists." });
 
     const user = await User.create({
       email,
@@ -27,7 +30,7 @@ export const signup = async (req, res) => {
       },
       process.env.SECRET_KEY,
       {
-        expiresIn: "30d",
+        expiresIn: "9999d",
       }
     );
 
