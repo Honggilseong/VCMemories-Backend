@@ -30,6 +30,7 @@ const userSchema = mongoose.Schema({
       profilePicture: String,
       userId: String,
       likes: [String],
+      createdAt: Date,
       comments: [
         {
           commentUserId: String,
