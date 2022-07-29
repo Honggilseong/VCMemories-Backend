@@ -4,11 +4,11 @@ import User from "../models/userSchema.js";
 
 export const createPost = async (req, res) => {
   const post = req.body;
-  const newPost = new Post({ ...post, createAt: new Date().toISOString() });
+  const newPost = new Post({ ...post, createdAt: new Date() });
   try {
     await newPost.save();
     const user = await User.findById(post.userId);
-    user.userPosts.push(newPost);
+    user.userPosts.unshift(newPost);
     await user.save();
     res.status(201).json(newPost);
   } catch (error) {
@@ -28,7 +28,7 @@ export const getPosts = async (req, res) => {
       },
       {
         $sort: {
-          createdAt: 1,
+          createdAt: -1,
         },
       },
       {
