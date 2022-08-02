@@ -5,8 +5,11 @@
   "proxy": "http://localhost:3000",
   "description": "vcmemories",
   "main": "index.js",
+  "engines": {
+    "node": "14.x"
+  },
   "scripts": {
-    "start": "nodemon index.js"
+    "start": "node index.js"
   },
   "author": "HONG_GIL_SEONG",
   "license": "ISC",
