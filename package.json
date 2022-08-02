@@ -2,7 +2,7 @@
   "name": "vcmemories",
   "version": "1.0.0",
   "type": "module",
-  "proxy": "http://localhost:3000",
+  "proxy": "http://vcmemories.com",
   "description": "vcmemories",
   "main": "index.js",
   "scripts": {
