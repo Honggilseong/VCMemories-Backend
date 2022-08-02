@@ -2,6 +2,9 @@
   "name": "vcmemories",
   "version": "1.0.0",
   "type": "module",
+  "engines": {
+    "node": "16.13.1"
+  },
   "proxy": "http://vcmemories.com",
   "description": "vcmemories",
   "main": "index.js",
