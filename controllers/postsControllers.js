@@ -17,7 +17,6 @@ export const createPost = async (req, res) => {
 };
 export const getPosts = async (req, res) => {
   const followingUsers = req.body;
-  console.log(followingUsers);
   try {
     if (followingUsers.length === 0) return [];
     const followingPosts = await Post.aggregate([
@@ -35,7 +34,6 @@ export const getPosts = async (req, res) => {
         $limit: 10,
       },
     ]);
-    console.log(followingPosts);
     res.status(200).json(followingPosts);
   } catch (error) {
     console.log(error);
