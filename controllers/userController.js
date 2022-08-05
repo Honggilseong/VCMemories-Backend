@@ -251,3 +251,15 @@ export const deleteNotifications = async (req, res) => {
     res.status(401).json({ message: "Something went wrong" });
   }
 };
+
+export const deleteUser = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    await User.findByIdAndDelete(id);
+    res.json({ message: "User deleted successfully" });
+  } catch (error) {
+    console.log(error.message);
+    res.status(401).json({ message: "Something went wrong" });
+  }
+};

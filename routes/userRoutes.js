@@ -1,6 +1,7 @@
 import express from "express";
 import {
   deleteNotifications,
+  deleteUser,
   followUser,
   getAllUsers,
   getSearchingUser,
@@ -25,4 +26,5 @@ router.patch("/:id/deletenotifications", protect, deleteNotifications);
 router.get("/getuserinfo/:id", protect, getUserInfo);
 router.get("/search/:username", protect, getSearchingUser);
 router.get("/getallusers", protect, getAllUsers);
+router.delete("/deleteaccount/:id", protect, deleteUser);
 export default router;
