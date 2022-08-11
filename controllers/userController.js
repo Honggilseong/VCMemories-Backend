@@ -97,6 +97,9 @@ export const getUserInfo = async (req, res) => {
       followers,
       following,
       notifications,
+      blockUsers,
+      followRequests,
+      isPrivate,
     } = user;
     const userData = {
       _id,
@@ -107,6 +110,9 @@ export const getUserInfo = async (req, res) => {
       followers,
       following,
       notifications,
+      blockUsers,
+      followRequests,
+      isPrivate,
     };
 
     res.status(200).json(userData);
@@ -173,17 +179,63 @@ export const followUser = async (req, res) => {
       );
     }
     await User.findByIdAndUpdate(userId, reqUser, { new: true });
-    console.log(updatedUser);
     res.json(updatedUser);
   } catch (error) {
     console.log(error);
     res.status(404).json({ message: "Something went wrong" });
   }
 };
+export const acceptFollowRequest = async (req, res) => {
+  const { id } = req.params;
+  const { userId } = req.body;
+  try {
+    if (!mongoose.Types.ObjectId.isValid(id))
+      return res.status(404).send("no user with the id");
 
+    const user = await User.findById(id).select("-userPosts -password");
+    const reqUser = await User.findById(userId).select("-userPosts -password");
+
+    user.followers.push(userId);
+    user.followRequests = user.followRequests.filter(
+      (request) => request.userId !== userId
+    );
+    const updatedUser = await User.findByIdAndUpdate(id, user, {
+      new: true,
+    });
+
+    reqUser.following.push(id);
+
+    await User.findByIdAndUpdate(userId, reqUser, { new: true });
+    res.json(updatedUser);
+  } catch (error) {
+    console.log(error);
+    res.status(404).json({ message: "Something went wrong" });
+  }
+};
+export const deleteFollowRequest = async (req, res) => {
+  const { id } = req.params;
+  const { userId } = req.body;
+  try {
+    if (!mongoose.Types.ObjectId.isValid(id))
+      return res.status(404).send("no user with the id");
+
+    const user = await User.findById(id).select("-userPosts -password");
+    user.followRequests = user.followRequests.filter(
+      (request) => request.userId !== userId
+    );
+    const updatedUser = await User.findByIdAndUpdate(id, user, {
+      new: true,
+    });
+
+    res.json(updatedUser);
+  } catch (error) {
+    console.log(error);
+    res.status(404).json({ message: "Something went wrong" });
+  }
+};
 export const uploadProfileImage = async (req, res) => {
   const { id, uploadImage } = req.body;
-  console.log(id, uploadImage);
+
   try {
     const user = await User.findById(id);
 
@@ -212,7 +264,7 @@ export const sendNotification = async (req, res) => {
     user.notifications.unshift(notification);
 
     const updatedUser = await User.findByIdAndUpdate(id, user, { new: true });
-    console.log(updatedUser);
+
     res.status(200).json(updatedUser);
   } catch (error) {
     console.log(error.message);
@@ -260,6 +312,64 @@ export const deleteUser = async (req, res) => {
     res.json({ message: "User deleted successfully" });
   } catch (error) {
     console.log(error.message);
+    res.status(401).json({ message: "Something went wrong" });
+  }
+};
+
+export const sendFollowRequest = async (req, res) => {
+  const { id } = req.params;
+  const { senderData } = req.body;
+  const dataWithId = {
+    _id: new mongoose.Types.ObjectId(),
+    ...senderData,
+  };
+  try {
+    const requestUser = await User.findById(id);
+    const findIndex = requestUser.followRequests.findIndex(
+      (request) => request.userId === senderData.userId
+    );
+    if (findIndex !== -1)
+      return res.status(400).json({ message: "Already requested" });
+
+    requestUser.followRequests.push(dataWithId);
+
+    await User.findByIdAndUpdate(id, requestUser, { new: true });
+
+    res.json({ message: "Success" });
+  } catch (error) {
+    console.log(error);
+    res.status(401).json({ message: "Something went wrong" });
+  }
+};
+
+export const switchAccountState = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const user = await User.findById(id);
+    user.isPrivate = !user.isPrivate;
+    const updatedUser = await User.findByIdAndUpdate(id, user, {
+      new: true,
+    });
+    res.status(200).json(updatedUser);
+  } catch (error) {
+    console.log(error);
+    res.status(401).json({ message: "Something went wrong" });
+  }
+};
+
+export const deleteAllFollowRequests = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const user = await User.findById(id);
+    user.followRequests = [];
+    const updatedUser = await User.findByIdAndUpdate(id, user, {
+      new: true,
+    });
+    res.status(200).json(updatedUser);
+  } catch (error) {
+    console.log(error);
     res.status(401).json({ message: "Something went wrong" });
   }
 };
