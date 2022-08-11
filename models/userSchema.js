@@ -58,6 +58,22 @@ const userSchema = mongoose.Schema({
       read: Boolean,
     },
   ],
+  followRequests: [
+    {
+      _id: mongoose.Schema.Types.ObjectId,
+      userId: String,
+      username: String,
+      profileImage: String,
+    },
+  ],
+  blockUsers: [
+    {
+      _id: mongoose.Schema.Types.ObjectId,
+      userId: String,
+      username: String,
+      profileImage: String,
+    },
+  ],
 });
 
 userSchema.pre("save", function (next) {
