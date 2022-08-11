@@ -18,7 +18,7 @@ export const createPost = async (req, res) => {
 export const getPosts = async (req, res) => {
   const followingUsers = req.body;
   try {
-    if (followingUsers.length === 0) return [];
+    if (followingUsers.length === 0) return res.status(204).json([]);
     const followingPosts = await Post.aggregate([
       {
         $match: {
