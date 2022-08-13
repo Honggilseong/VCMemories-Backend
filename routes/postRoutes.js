@@ -2,6 +2,7 @@ import express from "express";
 import {
   createPost,
   deletePost,
+  deleteUserComment,
   getPosts,
   leaveComment,
   likePost,
@@ -13,6 +14,7 @@ const router = express.Router();
 router.post("/", protect, getPosts);
 router.post("/createpost", protect, createPost);
 router.delete("/:id", protect, deletePost);
+router.delete("/:id/deleteusercomment", protect, deleteUserComment);
 router.patch("/:id/likepost", protect, likePost);
 router.patch("/:id/leavecomment", protect, leaveComment);
 export default router;
