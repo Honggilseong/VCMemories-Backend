@@ -98,17 +98,51 @@ export const likePost = async (req, res) => {
 export const leaveComment = async (req, res) => {
   const { id } = req.params;
   const { comment } = req.body;
+  const commentWithId = {
+    _id: new mongoose.Types.ObjectId(),
+    ...comment,
+  };
   try {
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(404).send("no post with the id");
     }
     const post = await Post.findById(id);
     const user = await User.findById(post.userId);
-    post.comments.push(comment);
+    post.comments.push(commentWithId);
     const userPostIndex = user.userPosts.findIndex(
       (userPost) => userPost._id === id
     );
-    user.userPosts[userPostIndex].comments.push(comment);
+    user.userPosts[userPostIndex].comments.push(commentWithId);
+    const updatedPost = await Post.findByIdAndUpdate(id, post, { new: true });
+    await User.findByIdAndUpdate(post.userId, user, { new: true });
+    res.status(201).json(updatedPost);
+  } catch (error) {
+    console.log(error);
+  }
+};
+export const deleteUserComment = async (req, res) => {
+  const { id } = req.params;
+  const { commentId } = req.body;
+  try {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(404).send("no post with the id");
+    }
+    const post = await Post.findById(id);
+    const user = await User.findById(post.userId);
+    post.comments = post.comments.filter(
+      (comment) => comment._id.toString() !== commentId
+    );
+
+    user.userPosts = user.userPosts.map((userPost) =>
+      userPost._id.toString() === id
+        ? {
+            ...userPost,
+            comments: userPost.comments.filter(
+              (comment) => comment._id.toString() !== commentId
+            ),
+          }
+        : userPost
+    );
     const updatedPost = await Post.findByIdAndUpdate(id, post, { new: true });
     await User.findByIdAndUpdate(post.userId, user, { new: true });
     res.status(201).json(updatedPost);
