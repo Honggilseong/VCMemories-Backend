@@ -3,6 +3,7 @@ import {
   createPost,
   deletePost,
   deleteUserComment,
+  getHashtagPosts,
   getPosts,
   leaveComment,
   likePost,
@@ -17,4 +18,5 @@ router.delete("/:id", protect, deletePost);
 router.delete("/:id/deleteusercomment", protect, deleteUserComment);
 router.patch("/:id/likepost", protect, likePost);
 router.patch("/:id/leavecomment", protect, leaveComment);
+router.get("/explore/hashtags/:hashtag", protect, getHashtagPosts);
 export default router;

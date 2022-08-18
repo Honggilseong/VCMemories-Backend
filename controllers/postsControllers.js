@@ -40,7 +40,24 @@ export const getPosts = async (req, res) => {
     res.status(404).json({ message: error.message });
   }
 };
-
+export const getHashtagPosts = async (req, res) => {
+  const { hashtag } = req.params;
+  try {
+    const hashtagPosts = await Post.find({
+      message: { $regex: `#${hashtag}(?![a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣])` },
+    })
+      .sort({ createdAt: -1 })
+      .limit(10);
+    if (!hashtagPosts) {
+      res.status(204).json([]);
+    } else {
+      res.status(200).json(hashtagPosts);
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(404).json({ message: error.message });
+  }
+};
 export const deletePost = async (req, res) => {
   const { id } = req.params;
   const { userId } = req.body;
