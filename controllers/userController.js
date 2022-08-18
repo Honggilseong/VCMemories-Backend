@@ -194,19 +194,18 @@ export const acceptFollowRequest = async (req, res) => {
 
     const user = await User.findById(id).select("-userPosts -password");
     const reqUser = await User.findById(userId).select("-userPosts -password");
-
     user.followers.push(userId);
     user.followRequests = user.followRequests.filter(
       (request) => request.userId !== userId
     );
-    const updatedUser = await User.findByIdAndUpdate(id, user, {
-      new: true,
-    });
 
     reqUser.following.push(id);
 
     await User.findByIdAndUpdate(userId, reqUser, { new: true });
-    res.json(updatedUser);
+    const updatedUser = await User.findByIdAndUpdate(id, user, {
+      new: true,
+    });
+    res.status(200).json(updatedUser);
   } catch (error) {
     console.log(error);
     res.status(404).json({ message: "Something went wrong" });
@@ -227,7 +226,7 @@ export const deleteFollowRequest = async (req, res) => {
       new: true,
     });
 
-    res.json(updatedUser);
+    res.status(200).json(updatedUser);
   } catch (error) {
     console.log(error);
     res.status(404).json({ message: "Something went wrong" });
