@@ -26,6 +26,7 @@ const postSchema = mongoose.Schema({
       },
     ],
   },
+  isEdit: Boolean,
 });
 
 const Post = mongoose.model("Post", postSchema);

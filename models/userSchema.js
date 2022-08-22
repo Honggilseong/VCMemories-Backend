@@ -39,6 +39,7 @@ const userSchema = mongoose.Schema({
           createdAt: Date,
         },
       ],
+      isEdit: Boolean,
     },
   ],
   following: {
