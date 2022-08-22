@@ -167,3 +167,28 @@ export const deleteUserComment = async (req, res) => {
     console.log(error);
   }
 };
+export const editUserPost = async (req, res) => {
+  const { id } = req.params;
+  const { title, message } = req.body;
+  try {
+    const post = await Post.findById(id);
+    const user = await User.findById(post.userId);
+
+    post.title = title;
+    post.message = message;
+    post.isEdit = true;
+    const findIndex = user.userPosts.findIndex(
+      (userPost) => userPost._id === id
+    );
+
+    user.userPosts[findIndex].title = title;
+    user.userPosts[findIndex].message = message;
+    user.userPosts[findIndex].isEdit = true;
+
+    const updatedPost = await Post.findByIdAndUpdate(id, post, { new: true });
+    await User.findByIdAndUpdate(post.userId, user, { new: true });
+    res.status(201).json(updatedPost);
+  } catch (error) {
+    console.log(error);
+  }
+};
