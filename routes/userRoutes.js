@@ -15,6 +15,7 @@ import {
   signin,
   signup,
   switchAccountState,
+  updateUserBio,
   uploadProfileImage,
 } from "../controllers/userController.js";
 import protect from "../middleware/authMiddleware.js";
@@ -33,8 +34,10 @@ router.patch("/:id/acceptfollowrequest", protect, acceptFollowRequest);
 router.patch("/:id/deletefollowrequest", protect, deleteFollowRequest);
 router.patch("/:id/switchaccountstate", protect, switchAccountState);
 router.patch("/:id/deleteallfollowrequests", protect, deleteAllFollowRequests);
+router.patch("/:id/updatebio", protect, updateUserBio);
 router.get("/getuserinfo/:id", protect, getUserInfo);
 router.get("/search/:username", protect, getSearchingUser);
 router.get("/getallusers", protect, getAllUsers);
 router.delete("/deleteaccount/:id", protect, deleteUser);
+
 export default router;

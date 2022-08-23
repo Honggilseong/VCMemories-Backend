@@ -100,6 +100,7 @@ export const getUserInfo = async (req, res) => {
       blockUsers,
       followRequests,
       isPrivate,
+      bio,
     } = user;
     const userData = {
       _id,
@@ -113,6 +114,7 @@ export const getUserInfo = async (req, res) => {
       blockUsers,
       followRequests,
       isPrivate,
+      bio,
     };
 
     res.status(200).json(userData);
@@ -366,6 +368,21 @@ export const deleteAllFollowRequests = async (req, res) => {
     const updatedUser = await User.findByIdAndUpdate(id, user, {
       new: true,
     });
+    res.status(200).json(updatedUser);
+  } catch (error) {
+    console.log(error);
+    res.status(401).json({ message: "Something went wrong" });
+  }
+};
+
+export const updateUserBio = async (req, res) => {
+  const { id } = req.params;
+  const { bio } = req.body;
+  try {
+    const user = await User.findById(id);
+    user.bio = bio;
+
+    const updatedUser = await User.findByIdAndUpdate(id, user, { new: true });
     res.status(200).json(updatedUser);
   } catch (error) {
     console.log(error);

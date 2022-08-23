@@ -75,6 +75,7 @@ const userSchema = mongoose.Schema({
       profileImage: String,
     },
   ],
+  bio: { type: String, default: "" },
 });
 
 userSchema.pre("save", function (next) {
