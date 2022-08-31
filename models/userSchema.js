@@ -57,6 +57,7 @@ const userSchema = mongoose.Schema({
       notificationType: String,
       image: String,
       read: Boolean,
+      postId: String,
     },
   ],
   followRequests: [
