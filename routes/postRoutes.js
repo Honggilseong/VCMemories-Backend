@@ -8,6 +8,7 @@ import {
   getPosts,
   leaveComment,
   likePost,
+  mentionUsersNotification,
 } from "../controllers/postsControllers.js";
 import protect from "../middleware/authMiddleware.js";
 
@@ -20,6 +21,7 @@ router.delete("/:id/deleteusercomment", protect, deleteUserComment);
 router.patch("/:id/likepost", protect, likePost);
 router.patch("/:id/leavecomment", protect, leaveComment);
 router.patch("/edit/:id", protect, editUserPost);
+router.patch("/:id/mentionuser", protect, mentionUsersNotification);
 router.get("/explore/hashtags/:hashtag", protect, getHashtagPosts);
 
 export default router;

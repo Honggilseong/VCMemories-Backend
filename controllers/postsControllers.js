@@ -192,3 +192,40 @@ export const editUserPost = async (req, res) => {
     console.log(error);
   }
 };
+
+export const mentionUsersNotification = async (req, res) => {
+  const { id } = req.params;
+  const { mentionUsers, sender, notificationType, image } = req.body;
+  console.log(mentionUsers, sender, notificationType, image);
+  try {
+    if (mentionUsers.length === 0)
+      return res.status(204).json({ message: "no mention users" });
+    mentionUsers.forEach(async (userId) => {
+      await User.findByIdAndUpdate(
+        userId,
+        {
+          $push: {
+            notifications: {
+              $each: [
+                {
+                  _id: new mongoose.Types.ObjectId(),
+                  sender,
+                  notificationType,
+                  image,
+                  postId: id,
+                  read: false,
+                },
+              ],
+              $position: 0,
+            },
+          },
+        },
+        { new: true }
+      );
+    });
+    res.status(204).json({ message: "sent notifications" });
+  } catch (error) {
+    console.log(error);
+    res.status(401).json({ message: "Something went wrong" });
+  }
+};
