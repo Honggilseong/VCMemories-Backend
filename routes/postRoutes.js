@@ -5,6 +5,7 @@ import {
   deleteUserComment,
   editUserPost,
   getHashtagPosts,
+  getNotificationsPost,
   getPosts,
   leaveComment,
   likePost,
@@ -22,6 +23,7 @@ router.patch("/:id/likepost", protect, likePost);
 router.patch("/:id/leavecomment", protect, leaveComment);
 router.patch("/edit/:id", protect, editUserPost);
 router.patch("/:id/mentionuser", protect, mentionUsersNotification);
+router.patch("/:id/notificationpost", protect, getNotificationsPost);
 router.get("/explore/hashtags/:hashtag", protect, getHashtagPosts);
 
 export default router;

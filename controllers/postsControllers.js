@@ -229,3 +229,16 @@ export const mentionUsersNotification = async (req, res) => {
     res.status(401).json({ message: "Something went wrong" });
   }
 };
+
+export const getNotificationsPost = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const post = await Post.findById(id);
+
+    res.status(200).json(post);
+  } catch (error) {
+    console.log(error);
+    res.status(401).json({ message: "Something went wrong" });
+  }
+};
