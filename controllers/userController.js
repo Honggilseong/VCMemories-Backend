@@ -390,3 +390,17 @@ export const updateUserBio = async (req, res) => {
     res.status(401).json({ message: "Something went wrong" });
   }
 };
+
+export const getFollowUsersList = async (req, res) => {
+  const { followList } = req.body;
+  try {
+    if (followList.length === 0) return res.status(204).json([]);
+    const followUsersList = await User.find({
+      _id: { $in: followList },
+    }).select("name profilePicture");
+    res.status(200).json(followUsersList);
+  } catch (error) {
+    console.log(error);
+    res.status(404).json({ message: error.message });
+  }
+};

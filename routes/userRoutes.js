@@ -7,6 +7,7 @@ import {
   deleteUser,
   followUser,
   getAllUsers,
+  getFollowUsersList,
   getSearchingUser,
   getUserInfo,
   readNotification,
@@ -24,6 +25,7 @@ const router = express.Router();
 
 router.post("/signin", signin);
 router.post("/signup", signup);
+router.post("/:id/getfollowusers", protect, getFollowUsersList);
 router.patch("/followuser/:id", protect, followUser);
 router.patch("/uploadprofileimage", protect, uploadProfileImage);
 router.patch("/:id/notification", protect, sendNotification);
