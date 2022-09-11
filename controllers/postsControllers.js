@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import Post from "../models/postSchema.js";
 import User from "../models/userSchema.js";
+import cloudinary from "../util/cloudinary.js";
 
 export const createPost = async (req, res) => {
   const post = req.body;
@@ -61,11 +62,12 @@ export const getHashtagPosts = async (req, res) => {
 export const deletePost = async (req, res) => {
   const { id } = req.params;
   const { userId } = req.body;
+
   if (!mongoose.Types.ObjectId.isValid(id))
     return res.status(404).send("No post with that id");
   try {
     const deletePostInfo = await Post.findById(id);
-
+    await cloudinary.v2.uploader.destroy(deletePostInfo.picture);
     if (deletePostInfo.userId !== userId)
       return res.status(404).send("a wrong user tried to delete this post");
 
