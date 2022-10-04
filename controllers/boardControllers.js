@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import multer from "multer";
 import BoardPost from "../models/boardPostSchema.js";
 import cloudinary from "../util/cloudinary.js";
 
