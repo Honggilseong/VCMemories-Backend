@@ -80,6 +80,7 @@ export const deletePost = async (req, res) => {
     res.json({ message: "Post deleted successfully" });
   } catch (error) {
     console.log(error);
+    res.status(401).json({ message: "Something went wrong" });
   }
 };
 
@@ -102,7 +103,9 @@ export const likePost = async (req, res) => {
       user.userPosts[userPostIndex].likes.push(userId);
     } else {
       post.likes = post.likes.filter((id) => id !== userId);
-      user.userPosts[userPostIndex].likes.filter((id) => id !== userId);
+      user.userPosts[userPostIndex].likes = user.userPosts[
+        userPostIndex
+      ].likes.filter((id) => id !== userId);
     }
     await User.findByIdAndUpdate(post.userId, user, { new: true });
     const updatedPost = await Post.findByIdAndUpdate(id, post, {
@@ -111,6 +114,7 @@ export const likePost = async (req, res) => {
     res.json(updatedPost);
   } catch (err) {
     console.log(err);
+    res.status(401).json({ message: "Something went wrong" });
   }
 };
 
@@ -137,6 +141,7 @@ export const leaveComment = async (req, res) => {
     res.status(201).json(updatedPost);
   } catch (error) {
     console.log(error);
+    res.status(401).json({ message: "Something went wrong" });
   }
 };
 export const deleteUserComment = async (req, res) => {
@@ -167,6 +172,7 @@ export const deleteUserComment = async (req, res) => {
     res.status(201).json(updatedPost);
   } catch (error) {
     console.log(error);
+    res.status(401).json({ message: "Something went wrong" });
   }
 };
 export const editUserPost = async (req, res) => {
@@ -192,6 +198,7 @@ export const editUserPost = async (req, res) => {
     res.status(201).json(updatedPost);
   } catch (error) {
     console.log(error);
+    res.status(401).json({ message: "Something went wrong" });
   }
 };
 
