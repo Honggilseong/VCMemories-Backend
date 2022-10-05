@@ -360,8 +360,7 @@ export const getUserBoardPostList = async (req, res) => {
 
   try {
     const boardPostList = await User.findOne({ name: username })
-      .populate("boardPosts")
-      .sort({ createdAt: -1 })
+      .populate({ path: "boardPosts", options: { sort: { createdAt: -1 } } })
       .select("boardPosts name profilePicture bio");
     if (!boardPostList)
       return res.status(406).json({ message: "user doesn't exist" });
