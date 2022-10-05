@@ -342,15 +342,16 @@ export const editBoardPostReply = async (req, res) => {
 
 export const uploadBoardPostImage = async (req, res) => {
   const { image } = req.body;
-  if (!image) return res.status(401).json({ message: "no image" });
+  if (!image) return res.status(406).json({ message: "no image" });
   try {
     const uploadedImage = await cloudinary.v2.uploader.upload(image, {
       transformation: [{ width: 960, height: 540, quality: "auto" }],
     });
+
     res.status(200).json(uploadedImage);
   } catch (error) {
     console.log(error);
-    res.status(401).json({ message: "Something went wrong" });
+    res.status(401).json({ message: error });
   }
 };
 
@@ -360,6 +361,7 @@ export const getUserBoardPostList = async (req, res) => {
   try {
     const boardPostList = await User.findOne({ name: username })
       .populate("boardPosts")
+      .sort({ createdAt: -1 })
       .select("boardPosts name profilePicture bio");
     if (!boardPostList)
       return res.status(406).json({ message: "user doesn't exist" });
