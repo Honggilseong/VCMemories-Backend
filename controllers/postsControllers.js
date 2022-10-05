@@ -10,7 +10,6 @@ export const createPost = async (req, res) => {
     await newPost.save();
     const user = await User.findById(post.userId);
     user.posts.push(newPost._id);
-    user.userPosts.unshift(newPost);
     await user.save();
     res.status(201).json(newPost);
   } catch (error) {
@@ -75,7 +74,9 @@ export const deletePost = async (req, res) => {
     const user = await User.findById(userId);
     await Post.findByIdAndRemove(id);
 
-    user.userPosts = user.userPosts.filter((post) => post._id !== id);
+    user.posts = user.posts.filter(
+      (post) => post._id.toString() !== id.toString()
+    );
     await User.findByIdAndUpdate(userId, user, { new: true });
 
     res.json({ message: "Post deleted successfully" });
@@ -93,26 +94,16 @@ export const likePost = async (req, res) => {
       return res.status(404).send("no post with the id");
 
     const post = await Post.findById(id);
-    const user = await User.findById(post.userId);
-    const userPostIndex = user.userPosts.findIndex(
-      (userPost) => userPost._id === id
-    );
     const index = post.likes.findIndex((id) => id === userId);
-
     if (index === -1) {
       post.likes.push(userId);
-      user.userPosts[userPostIndex].likes.push(userId);
     } else {
       post.likes = post.likes.filter((id) => id !== userId);
-      user.userPosts[userPostIndex].likes = user.userPosts[
-        userPostIndex
-      ].likes.filter((id) => id !== userId);
     }
-    await User.findByIdAndUpdate(post.userId, user, { new: true });
     const updatedPost = await Post.findByIdAndUpdate(id, post, {
       new: true,
     });
-    res.json(updatedPost);
+    res.status(201).json(updatedPost);
   } catch (err) {
     console.log(err);
     res.status(401).json({ message: "Something went wrong" });
@@ -131,14 +122,11 @@ export const leaveComment = async (req, res) => {
       return res.status(404).send("no post with the id");
     }
     const post = await Post.findById(id);
-    const user = await User.findById(post.userId);
+
     post.comments.push(commentWithId);
-    const userPostIndex = user.userPosts.findIndex(
-      (userPost) => userPost._id === id
-    );
-    user.userPosts[userPostIndex].comments.push(commentWithId);
+
     const updatedPost = await Post.findByIdAndUpdate(id, post, { new: true });
-    await User.findByIdAndUpdate(post.userId, user, { new: true });
+
     res.status(201).json(updatedPost);
   } catch (error) {
     console.log(error);
@@ -153,23 +141,13 @@ export const deleteUserComment = async (req, res) => {
       return res.status(404).send("no post with the id");
     }
     const post = await Post.findById(id);
-    const user = await User.findById(post.userId);
+
     post.comments = post.comments.filter(
       (comment) => comment._id.toString() !== commentId
     );
 
-    user.userPosts = user.userPosts.map((userPost) =>
-      userPost._id.toString() === id
-        ? {
-            ...userPost,
-            comments: userPost.comments.filter(
-              (comment) => comment._id.toString() !== commentId
-            ),
-          }
-        : userPost
-    );
     const updatedPost = await Post.findByIdAndUpdate(id, post, { new: true });
-    await User.findByIdAndUpdate(post.userId, user, { new: true });
+
     res.status(201).json(updatedPost);
   } catch (error) {
     console.log(error);
@@ -181,21 +159,13 @@ export const editUserPost = async (req, res) => {
   const { title, message } = req.body;
   try {
     const post = await Post.findById(id);
-    const user = await User.findById(post.userId);
 
     post.title = title;
     post.message = message;
     post.isEdit = true;
-    const findIndex = user.userPosts.findIndex(
-      (userPost) => userPost._id === id
-    );
-
-    user.userPosts[findIndex].title = title;
-    user.userPosts[findIndex].message = message;
-    user.userPosts[findIndex].isEdit = true;
 
     const updatedPost = await Post.findByIdAndUpdate(id, post, { new: true });
-    await User.findByIdAndUpdate(post.userId, user, { new: true });
+
     res.status(201).json(updatedPost);
   } catch (error) {
     console.log(error);
