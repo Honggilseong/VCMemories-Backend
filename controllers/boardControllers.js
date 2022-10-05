@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import BoardPost from "../models/boardPostSchema.js";
+import User from "../models/userSchema.js";
 import cloudinary from "../util/cloudinary.js";
 
 export const getAllBoardPosts = async (req, res) => {
@@ -16,10 +17,16 @@ export const createBoardPost = async (req, res) => {
   const { boardPost } = req.body;
   const saveBoardPost = new BoardPost({
     ...boardPost,
-    postedBy: boardPost.userId,
   });
+  console.log(saveBoardPost);
   try {
     await saveBoardPost.save();
+    const userInfo = await User.findById(boardPost.userId);
+
+    userInfo.boardPosts.push(saveBoardPost._id);
+
+    await User.findByIdAndUpdate(boardPost.userId, userInfo, { new: true });
+
     res.status(200).json("Success");
   } catch (error) {
     console.log(error);
@@ -341,6 +348,22 @@ export const uploadBoardPostImage = async (req, res) => {
       transformation: [{ width: 960, height: 540, quality: "auto" }],
     });
     res.status(200).json(uploadedImage);
+  } catch (error) {
+    console.log(error);
+    res.status(401).json({ message: "Something went wrong" });
+  }
+};
+
+export const getUserBoardPostList = async (req, res) => {
+  const { username } = req.params;
+
+  try {
+    const boardPostList = await User.findOne({ name: username })
+      .populate("boardPosts")
+      .select("boardPosts name profilePicture bio");
+    if (!boardPostList)
+      return res.status(406).json({ message: "user doesn't exist" });
+    res.status(200).json(boardPostList);
   } catch (error) {
     console.log(error);
     res.status(401).json({ message: "Something went wrong" });
