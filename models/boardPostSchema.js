@@ -35,11 +35,6 @@ const boardSchema = mongoose.Schema({
       },
     ],
   },
-  postedBy: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    required: true,
-  },
 });
 
 const BoardPost = mongoose.model("BoardPost", boardSchema);
