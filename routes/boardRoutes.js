@@ -8,6 +8,7 @@ import {
   editBoardPostReply,
   getAllBoardPosts,
   getBoardPost,
+  getUserBoardPostList,
   leaveBoardPostComment,
   leaveBoardPostReply,
   likeBoardPost,
@@ -21,6 +22,7 @@ const router = express.Router();
 
 router.get("/getallboardposts", getAllBoardPosts);
 router.get("/getboardpost/:id", getBoardPost);
+router.get("/getuserboardpostlist/:username", getUserBoardPostList);
 router.post("/boardpost/post", createBoardPost);
 router.post("/uploadboardpostpreviewimage/:id", protect, uploadBoardPostImage);
 router.patch("/leaveboardpostcomment/:id", protect, leaveBoardPostComment);
