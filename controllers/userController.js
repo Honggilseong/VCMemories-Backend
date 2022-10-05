@@ -86,38 +86,15 @@ export const signin = async (req, res) => {
 export const getUserInfo = async (req, res) => {
   const { id } = req.params;
   try {
-    const user = await User.findById(id);
+    const user = await User.findById(id)
+      .populate({
+        path: "posts",
+        options: { sort: { createdAt: -1 } },
+      })
+      .select("-password -userPosts");
     if (!user) return res.status(404).json({ message: "User doesn't exist." });
-    const {
-      _id,
-      email,
-      name,
-      profilePicture,
-      userPosts,
-      followers,
-      following,
-      notifications,
-      blockUsers,
-      followRequests,
-      isPrivate,
-      bio,
-    } = user;
-    const userData = {
-      _id,
-      email,
-      name,
-      profilePicture,
-      userPosts,
-      followers,
-      following,
-      notifications,
-      blockUsers,
-      followRequests,
-      isPrivate,
-      bio,
-    };
 
-    res.status(200).json(userData);
+    res.status(200).json(user);
   } catch (error) {
     res.status(500).json({ message: "Something went wrong" });
   }
@@ -126,11 +103,12 @@ export const getUserInfo = async (req, res) => {
 export const getSearchingUser = async (req, res) => {
   const { username } = req.params;
   try {
-    const userData = await User.findOne({ name: username }).select("-password");
+    const userData = await User.findOne({ name: username })
+      .populate({ path: "posts", options: { sort: { createdAt: -1 } } })
+      .select("-password -notifications");
 
     if (!userData)
       return res.status(404).json({ message: "User doesn't exist." });
-
     res.status(200).json(userData);
   } catch (error) {
     console.log(error);
