@@ -9,6 +9,7 @@ export const createPost = async (req, res) => {
   try {
     await newPost.save();
     const user = await User.findById(post.userId);
+    user.posts.push(newPost._id);
     user.userPosts.unshift(newPost);
     await user.save();
     res.status(201).json(newPost);
