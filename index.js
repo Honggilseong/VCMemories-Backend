@@ -14,7 +14,7 @@ dotenv.config();
 app.use(bodyParser.json({ limit: "30mb", extended: true }));
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
 const options = {
-  origin: "https://vcmemories.com",
+  origin: "http://localhost:3000",
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   preflightContinue: false,
   optionsSuccessStatus: 204,
@@ -24,7 +24,7 @@ app.use(cors(options));
 app.use("/user", userRoutes);
 app.use("/posts", postsRoutes);
 app.use("/report", reportRoutes);
-app.use("/board", boardRoutes);
+app.use("/forum", boardRoutes);
 
 const PORT = process.env.PORT || 5000;
 
