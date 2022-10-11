@@ -13,12 +13,35 @@ export const getAllBoardPosts = async (req, res) => {
   }
 };
 
+export const getBoardPostsQuery = async (req, res) => {
+  const page = req.query.page || 1;
+  const ITEMS_PER_PAGE = 20;
+  const query = {};
+  try {
+    const skip = (page - 1) * ITEMS_PER_PAGE;
+    const countPromise = BoardPost.estimatedDocumentCount(query);
+    const boardPostsPromise = BoardPost.find(query)
+      .sort({ createdAt: -1 })
+      .limit(ITEMS_PER_PAGE)
+      .skip(skip);
+    const [count, boardPosts] = await Promise.all([
+      countPromise,
+      boardPostsPromise,
+    ]);
+    const pageCount = count / ITEMS_PER_PAGE;
+
+    res.status(200).json({ pagination: { count, pageCount }, boardPosts });
+  } catch (error) {
+    console.log(error);
+    res.status(401).json({ message: "Something went wrong" });
+  }
+};
+
 export const createBoardPost = async (req, res) => {
   const { boardPost } = req.body;
   const saveBoardPost = new BoardPost({
     ...boardPost,
   });
-  console.log(saveBoardPost);
   try {
     await saveBoardPost.save();
     const userInfo = await User.findById(boardPost.userId);
@@ -67,6 +90,44 @@ export const getBoardPost = async (req, res) => {
       new: true,
     });
 
+    res.status(200).json(updatedBoardPost);
+  } catch (error) {
+    console.log(error);
+    res.status(401).json({ message: "Something went wrong" });
+  }
+};
+
+export const getEditBoardPost = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const boardPost = await BoardPost.findById(id);
+    if (!boardPost)
+      return res.status(406).json({ message: "this post doesn't exist." });
+
+    res.status(200).json(boardPost);
+  } catch (error) {
+    console.log(error);
+    res.status(401).json({ message: "Something went wrong" });
+  }
+};
+
+export const updateBoardPost = async (req, res) => {
+  const { id } = req.params;
+  const { boardPost } = req.body;
+  try {
+    const getBoardPost = await BoardPost.findById(id);
+    if (!boardPost)
+      return res.status(406).json({ message: "this post doesn't exist." });
+    getBoardPost.content = boardPost.content;
+    getBoardPost.title = boardPost.title;
+    getBoardPost.category = boardPost.category;
+    getBoardPost.updatedAt = boardPost.updatedAt;
+
+    const updatedBoardPost = await BoardPost.findByIdAndUpdate(
+      id,
+      getBoardPost,
+      { new: true }
+    );
     res.status(200).json(updatedBoardPost);
   } catch (error) {
     console.log(error);
@@ -157,7 +218,7 @@ export const leaveBoardPostReply = async (req, res) => {
 export const likeBoardPostComment = async (req, res) => {
   const { id } = req.params;
   const { userId, commentId } = req.body;
-  console.log(userId);
+
   try {
     const boardPost = await BoardPost.findById(id);
 
