@@ -4,7 +4,6 @@ const postSchema = mongoose.Schema({
   title: String,
   message: String,
   name: String,
-  tags: [String],
   picture: String,
   likes: {
     type: [String],
@@ -28,6 +27,7 @@ const postSchema = mongoose.Schema({
   },
   isEdit: Boolean,
   postType: String,
+  images: [String],
 });
 
 const Post = mongoose.model("Post", postSchema);
