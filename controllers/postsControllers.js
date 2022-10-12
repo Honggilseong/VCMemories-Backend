@@ -6,6 +6,7 @@ import cloudinary from "../util/cloudinary.js";
 export const createPost = async (req, res) => {
   const { postData } = req.body;
   let images = [];
+  let imageDeleteIds = [];
   try {
     for (let i = 0; i < postData.images.length; i++) {
       let path = postData.images[i];
@@ -14,8 +15,14 @@ export const createPost = async (req, res) => {
         transformation: [{ width: 960, height: 540, quality: "auto" }],
       });
       images.push(result.url);
+      imageDeleteIds.push(result.public_id);
     }
-    const newPost = new Post({ ...postData, createdAt: new Date(), images });
+    const newPost = new Post({
+      ...postData,
+      createdAt: new Date(),
+      images,
+      imageDeleteIds,
+    });
     await newPost.save();
     const user = await User.findById(postData.userId);
     user.posts.push(newPost._id);
@@ -77,10 +84,13 @@ export const deletePost = async (req, res) => {
     return res.status(404).send("No post with that id");
   try {
     const deletePostInfo = await Post.findById(id);
-    await cloudinary.v2.uploader.destroy(deletePostInfo.picture);
     if (deletePostInfo.userId !== userId)
       return res.status(404).send("a wrong user tried to delete this post");
-
+    if (deletePostInfo?.imageDeleteIds?.length > 0) {
+      for (let i = 0; i < deletePostInfo.imageDeleteIds.length; i++) {
+        await cloudinary.v2.uploader.destroy(deletePostInfo.imageDeleteIds[i]);
+      }
+    }
     const user = await User.findById(userId);
     await Post.findByIdAndRemove(id);
 

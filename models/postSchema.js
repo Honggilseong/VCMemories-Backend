@@ -28,6 +28,7 @@ const postSchema = mongoose.Schema({
   isEdit: Boolean,
   postType: String,
   images: [String],
+  imageDeleteIds: [String],
 });
 
 const Post = mongoose.model("Post", postSchema);
