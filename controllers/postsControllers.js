@@ -4,22 +4,20 @@ import User from "../models/userSchema.js";
 import cloudinary from "../util/cloudinary.js";
 
 export const createPost = async (req, res) => {
-  const postData = req.body.data;
-  const parseData = await JSON.parse(postData);
-  const files = req.files;
+  const { postData } = req.body;
   let images = [];
   try {
-    for (let i = 0; i < files.length; i++) {
-      let path = files[i].path;
+    for (let i = 0; i < postData.images.length; i++) {
+      let path = postData.images[i];
 
       let result = await cloudinary.v2.uploader.upload(path, {
         transformation: [{ width: 960, height: 540, quality: "auto" }],
       });
       images.push(result.url);
     }
-    const newPost = new Post({ ...parseData, createdAt: new Date(), images });
+    const newPost = new Post({ ...postData, createdAt: new Date(), images });
     await newPost.save();
-    const user = await User.findById(parseData.userId);
+    const user = await User.findById(postData.userId);
     user.posts.push(newPost._id);
     await user.save();
     res.status(201).json(newPost);
