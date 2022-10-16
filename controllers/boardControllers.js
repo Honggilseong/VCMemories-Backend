@@ -15,11 +15,27 @@ export const getAllBoardPosts = async (req, res) => {
 
 export const getBoardPostsQuery = async (req, res) => {
   const page = req.query.page || 1;
+  const search = req.query.search || "";
+  const filter = req.query.filter || "";
   const ITEMS_PER_PAGE = 20;
-  const query = {};
+  let query = {};
+  if (search) {
+    query = {
+      title: { $regex: search.toString(), $options: "i" },
+    };
+  } else if (filter) {
+    query = {
+      category: { $regex: filter.toString(), $options: "i" },
+    };
+  }
   try {
     const skip = (page - 1) * ITEMS_PER_PAGE;
-    const countPromise = BoardPost.estimatedDocumentCount(query);
+    let countPromise = 0;
+    if (search || filter) {
+      countPromise = BoardPost.find(query).countDocuments();
+    } else {
+      countPromise = BoardPost.estimatedDocumentCount(query);
+    }
     const boardPostsPromise = BoardPost.find(query)
       .sort({ createdAt: -1 })
       .limit(ITEMS_PER_PAGE)
