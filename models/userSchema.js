@@ -19,29 +19,6 @@ const userSchema = mongoose.Schema({
   },
   isPrivate: { type: Boolean, default: false },
   userTitle: { type: String, default: "" },
-  userPosts: [
-    {
-      _id: String,
-      title: String,
-      picture: String,
-      message: String,
-      tags: [String],
-      name: String,
-      profilePicture: String,
-      userId: String,
-      likes: [String],
-      createdAt: Date,
-      comments: [
-        {
-          commentUserId: String,
-          commentUserName: String,
-          comment: String,
-          createdAt: Date,
-        },
-      ],
-      isEdit: Boolean,
-    },
-  ],
   following: {
     type: [String],
     default: [],
