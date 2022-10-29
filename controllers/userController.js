@@ -91,7 +91,7 @@ export const getUserInfo = async (req, res) => {
         path: "posts",
         options: { sort: { createdAt: -1 } },
       })
-      .select("-password -userPosts");
+      .select("-password");
     if (!user) return res.status(404).json({ message: "User doesn't exist." });
 
     res.status(200).json(user);
