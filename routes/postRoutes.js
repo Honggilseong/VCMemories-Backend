@@ -15,7 +15,7 @@ import protect from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-router.post("/", protect, getPosts);
+router.post("/", getPosts);
 router.delete("/:id", protect, deletePost);
 router.delete("/:id/deleteusercomment", protect, deleteUserComment);
 router.patch("/:id/likepost", protect, likePost);
@@ -24,6 +24,6 @@ router.patch("/edit/:id", protect, editUserPost);
 router.patch("/:id/mentionuser", protect, mentionUsersNotification);
 router.patch("/:id/notificationpost", protect, getNotificationsPost);
 router.patch("/createpost", protect, createPost);
-router.get("/explore/hashtags/:hashtag", protect, getHashtagPosts);
+router.get("/explore/hashtags/:hashtag", getHashtagPosts);
 
 export default router;
