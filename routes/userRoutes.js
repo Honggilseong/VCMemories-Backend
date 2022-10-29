@@ -25,7 +25,7 @@ const router = express.Router();
 
 router.post("/signin", signin);
 router.post("/signup", signup);
-router.post("/:id/getfollowusers", protect, getFollowUsersList);
+router.post("/:id/getfollowusers", getFollowUsersList);
 router.patch("/followuser/:id", protect, followUser);
 router.patch("/uploadprofileimage", protect, uploadProfileImage);
 router.patch("/:id/notification", protect, sendNotification);
@@ -38,8 +38,8 @@ router.patch("/:id/switchaccountstate", protect, switchAccountState);
 router.patch("/:id/deleteallfollowrequests", protect, deleteAllFollowRequests);
 router.patch("/:id/updatebio", protect, updateUserBio);
 router.get("/getuserinfo/:id", protect, getUserInfo);
-router.get("/search/:username", protect, getSearchingUser);
-router.get("/getallusers", protect, getAllUsers);
+router.get("/search/:username", getSearchingUser);
+router.get("/getallusers", getAllUsers);
 router.delete("/deleteaccount/:id", protect, deleteUser);
 
 export default router;
